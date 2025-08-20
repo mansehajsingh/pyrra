@@ -315,19 +315,21 @@ func (in *ServiceLevelObjective) validate() (admission.Warnings, error) {
 			if !ok {
 				return warnings, fmt.Errorf("latency success metric must be a vector selector, but got %T", parsedSuccess)
 			}
-			var bucketFound bool
-			for _, matcher := range v.LabelMatchers {
-				if matcher.Name == labels.BucketLabel {
-					if _, err := strconv.ParseFloat(matcher.Value, 64); err != nil {
-						return warnings, fmt.Errorf("latency success metric must contain a le label matcher with a float value: %w", err)
-					}
-					bucketFound = true
-					break
-				}
-			}
-			if !bucketFound {
-				return warnings, fmt.Errorf("latency success metric must contain a le label matcher")
-			}
+			// Removed to enable creating success events based SLOs without "le" label
+			//
+			//var bucketFound bool
+			//for _, matcher := range v.LabelMatchers {
+			//	if matcher.Name == labels.BucketLabel {
+			//		if _, err := strconv.ParseFloat(matcher.Value, 64); err != nil {
+			//			return warnings, fmt.Errorf("latency success metric must contain a le label matcher with a float value: %w", err)
+			//		}
+			//		bucketFound = true
+			//		break
+			//	}
+			//}
+			//if !bucketFound {
+			//	return warnings, fmt.Errorf("latency success metric must contain a le label matcher")
+			//}
 
 			if !strings.HasSuffix(v.Name, "_bucket") {
 				warnings = append(warnings, "latency success metric should usually be a histogram bucket")
